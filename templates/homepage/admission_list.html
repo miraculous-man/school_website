@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block page_title %}New Admissions{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Pending Applications</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Photo</th> 
+                        <th>Student Name</th>
+                        <th>Email</th>
+                        <th>Grade</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for admission in admissions %}
+                    <tr>
+                        <td>{{ admission.created_at|date:"M d, Y" }}</td>
+                        <td><img src="{{ admission.photo.url }}" style="width: 40px; height: 40px;" alt=""></td>
+
+                        <td>{{ admission.student_name }}</td>
+                        <td>{{ admission.email }}</td>
+                        <td>{{ admission.grade }}</td>
+                        <td>
+                            <span class="badge {% if admission.status == 'Enrolled' %}bg-success{% else %}bg-primary{% endif %}">
+                                {{ admission.status }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'homepage:letter' admission.pk %}" class="btn btn-outline-info" title="View Letter">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                {% if admission.status != 'Enrolled' %}
+                                <a href="{% url 'homepage:convert_to_student' admission.pk %}" class="btn btn-outline-success" title="Enroll as Student">
+                                    <i class="bi bi-person-plus"></i> Enroll
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center">No new applications found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4>Exam Result: {{ attempt.exam.title }}</h4>
+        </div>
+        <div class="card-body text-center">
+            <h1 class="display-4">{{ attempt.score }}/{{ attempt.exam.total_marks }}</h1>
+            <p class="lead">Correct Answers: {{ attempt.correct_answers }} / {{ attempt.total_questions }}</p>
+            {% if attempt.score >= attempt.exam.passing_marks %}
+            <div class="alert alert-success">Congratulations! You Passed.</div>
+            {% else %}
+            <div class="alert alert-danger">You did not reach the passing marks.</div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if attempt.exam.show_result %}
+    <h3>Review Answers</h3>
+    {% for answer in answers %}
+    <div class="card mb-3 {% if answer.is_correct %}border-success{% else %}border-danger{% endif %}">
+        <div class="card-body">
+            <p><strong>Q: {{ answer.question.question_text }}</strong></p>
+            <p>Your Answer: <span class="{% if answer.is_correct %}text-success{% else %}text-danger{% endif %}">{{ answer.selected_answer }}</span></p>
+            {% if not answer.is_correct %}
+            <p>Correct Answer: <span class="text-success">{{ answer.question.correct_answer }}</span></p>
+            {% endif %}
+            {% if answer.question.explanation %}
+            <div class="mt-2 small text-muted"><strong>Explanation:</strong> {{ answer.question.explanation }}</div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+    <div class="text-center mt-4">
+        <a href="{% url 'cbt:dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}
